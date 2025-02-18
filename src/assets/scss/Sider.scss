@@ -1,0 +1,55 @@
+@import "./global.scss";
+
+@mixin menu-item-config {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+    font-family: Roboto;
+    font-size: 0.95rem;
+    font-weight: 400;
+}
+
+.custom-sider {
+    height: 100vh;
+    background: $background-color-1;
+    // background: red;
+    position:absolute;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    width: 250px;
+    transition: width 0.3s ease;
+    
+    &.collapsed {
+        width: 80px;
+    }
+
+    .logo img {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        width: 150px;
+        font-weight: 600;
+        padding: 20px;
+        transition: all 0.7s ease;
+    }
+
+    .ant-menu-submenu {
+        .ant-menu {
+            max-height: 400px;
+            overflow: auto;
+            .menu-item {
+                @include menu-item-config();
+            }
+        }
+    }
+
+    .sider-toggle {
+        margin-top: auto;
+        padding: 10px;
+        cursor: pointer;
+        text-align: center;
+        background: #f0f2f5;
+    }
+}

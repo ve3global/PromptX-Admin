@@ -1,0 +1,36 @@
+@mixin notify-count{
+      font-size: 15px;
+      background-color:rgba(63, 63, 70, 1);
+      color: white;
+      font-weight: 500;
+      
+                      
+    }
+    .header-container{
+    .header-wrapper
+    {
+      display: flex;
+      flex-direction: row-reverse;
+      align-items: center;
+      background-color: #FFFFFF;
+       padding: 10px;
+       padding-left: 30px;
+       padding-right: 30px;
+      .header-right{
+        display: flex;
+        justify-content:space-between;
+        align-items: center;
+        gap:25px;
+    
+        .badge 
+        {
+          .ant-badge-count{
+            @include notify-count();
+          }
+        }
+      }
+      
+    }
+    
+    
+    }
