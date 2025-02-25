@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import {
   Input,
   InputNumber,
@@ -8,12 +9,12 @@ import {
   message,
   Card,
 } from "antd";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const { TextArea } = Input;
 
-function CreateSubscription() {
+function EditSubscription() {
+  const { id } = useParams();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
@@ -22,8 +23,28 @@ function CreateSubscription() {
     TenancyModel: "",
     TargetAudience: "",
     Price: null,
-    disabled: false,
+    Disabled: false,
   });
+
+  useEffect(() => {
+    const fetchSubscription = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8000/subscription/${id}`
+        );
+        if (response.data.success) {
+          setForm(response.data.data);
+        } else {
+          message.error("Failed to fetch subscription.");
+        }
+      } catch (error) {
+        console.error("Error fetching subscription:", error);
+        message.error("An error occurred while fetching the subscription.");
+      }
+    };
+
+    fetchSubscription();
+  }, [id]);
 
   const handleChange = (field, value) => {
     setForm((prev) => ({
@@ -40,23 +61,22 @@ function CreateSubscription() {
 
     setLoading(true);
     try {
-      console.log(JSON.stringify(form));
-      const response = await axios.post(
-        "http://localhost:8000/subscription/create",
+      const response = await axios.put(
+        `http://localhost:8000/subscription/update/${id}`,
         form
       );
 
       if (response.data.success) {
-        message.success("Subscription Created Successfully!");
+        message.success("Subscription Updated Successfully!");
         navigate("/subscriptions");
       } else {
         message.error(
-          response.data.message || "Failed to create subscription."
+          response.data.message || "Failed to update subscription."
         );
       }
     } catch (error) {
-      console.error("Error creating subscription:", error);
-      message.error("An error occurred while creating the subscription.");
+      console.error("Error updating subscription:", error);
+      message.error("An error occurred while updating the subscription.");
     } finally {
       setLoading(false);
     }
@@ -84,7 +104,7 @@ function CreateSubscription() {
         }}
       >
         <h2 style={{ textAlign: "center", marginBottom: "20px" }}>
-          Create Subscription
+          Edit Subscription
         </h2>
 
         <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
@@ -137,14 +157,14 @@ function CreateSubscription() {
           />
 
           <Checkbox
-            checked={form.disabled}
-            onChange={(e) => handleChange("disabled", e.target.checked)}
+            checked={form.Disabled}
+            onChange={(e) => handleChange("Disabled", e.target.checked)}
           >
             Disabled
           </Checkbox>
 
           <Button type="primary" block onClick={handleSubmit} loading={loading}>
-            {loading ? "Creating..." : "Create Subscription"}
+            {loading ? "Updating..." : "Update Subscription"}
           </Button>
         </div>
       </Card>
@@ -152,4 +172,4 @@ function CreateSubscription() {
   );
 }
 
-export default CreateSubscription;
+export default EditSubscription;
