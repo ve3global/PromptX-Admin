@@ -11,6 +11,7 @@ import {
   Input,
   Form,
   Select,
+  Popconfirm,
 } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
@@ -161,13 +162,15 @@ const SubscriptionPage = () => {
           <Button type="link" onClick={() => navigate(`/update/${record.key}`)}>
             Edit
           </Button>
-          <Button
-            type="link"
-            danger
-            onClick={() => deleteSubscription(record.key)}
+          <Popconfirm
+            title="Delete the task"
+            description="Are you sure you want to delete this task?"
+            onConfirm={() => deleteSubscription(record.key)}
+            okText="Yes"
+            cancelText="No"
           >
-            Delete
-          </Button>
+            <Button danger>Delete</Button>
+          </Popconfirm>
         </Space>
       ),
     },

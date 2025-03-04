@@ -19,6 +19,7 @@ const SiderComponent = () => {
         </Menu.Item>
         <Menu.Item key="2" className="menu-item">
           Features
+          <Link to="/features"></Link>
         </Menu.Item>
       </Menu>
     </div>

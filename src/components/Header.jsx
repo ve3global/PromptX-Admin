@@ -10,8 +10,8 @@ const HeaderComponent = () => {
 
   if (location.pathname === "/subscriptions") {
     headerTitle = "Subscription Management";
-  } else if (location.pathname === "/create") {
-    headerTitle = "Create Subscription";
+  } else if (location.pathname === "/features") {
+    headerTitle = "Features Management";
   }
 
   return (
@@ -24,7 +24,7 @@ const HeaderComponent = () => {
           alignItems: "center",
         }}
       >
-        <h2 className="header-title" style={{ margin: 0 }}>
+        <h2 className="header-title" style={{ margin: 5, paddingRight: 720 }}>
           {headerTitle}
         </h2>
         <div

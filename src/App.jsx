@@ -6,6 +6,8 @@ import SubscriptionPage from "./pages/SubscriptionPage";
 import "./App.css";
 import CreateSubscription from "./pages/CreateSubscription";
 import EditSubscription from "./pages/EditSubscription";
+import FeatureGetting from "./pages/FeatureGetting";
+import EditFeature from "./pages/EditFeature";
 
 function App() {
   return (
@@ -17,6 +19,11 @@ function App() {
           <Route path="/subscriptions" element={<SubscriptionPage />} />
           <Route path="/create" element={<CreateSubscription />} />
           <Route path="/update/:id" element={<EditSubscription />} />
+          <Route path="/features" element={<FeatureGetting></FeatureGetting>} />
+          <Route
+            path="/updateFeatures/:id"
+            element={<EditFeature></EditFeature>}
+          />
         </Routes>
       </Layout>
     </Layout>
