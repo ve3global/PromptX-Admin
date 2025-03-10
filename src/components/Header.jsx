@@ -24,7 +24,7 @@ const HeaderComponent = () => {
           alignItems: "center",
         }}
       >
-        <h2 className="header-title" style={{ margin: 5, paddingRight: 720 }}>
+        <h2 className="header-title" style={{ margin: 5, paddingRight: 690 }}>
           {headerTitle}
         </h2>
         <div

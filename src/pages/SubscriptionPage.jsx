@@ -12,22 +12,22 @@ import {
   Form,
   Select,
   Popconfirm,
+  Modal,
 } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Row, Col } from "antd";
 
 const { Title } = Typography;
 const { Content } = Layout;
-const { Search } = Input;
 const { Option } = Select;
 
 const SubscriptionPage = () => {
   const navigate = useNavigate();
   const [subscriptions, setSubscriptions] = useState([]);
-  const [isCreating, setIsCreating] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [form] = Form.useForm();
+  const [editingSubscription, setEditingSubscription] = useState(null);
 
   useEffect(() => {
     fetchSubscriptions();
@@ -100,31 +100,37 @@ const SubscriptionPage = () => {
     }
   };
 
-  const createSubscription = async (values) => {
-    console.log("Submitting values:", values);
-
+  const handleFormSubmit = async (values) => {
     try {
-      const response = await axios.post(
-        "http://localhost:8000/subscription/create",
-        values
-      );
-
-      console.log("Server response:", response.data);
+      const url = editingSubscription
+        ? `http://localhost:8000/subscription/update/${editingSubscription._id}`
+        : "http://localhost:8000/subscription/create";
+      const method = editingSubscription ? axios.put : axios.post;
+      const response = await method(url, values);
 
       if (response.data.success) {
-        message.success("Subscription created successfully");
-        setIsCreating(false);
+        message.success(
+          editingSubscription
+            ? "Subscription updated successfully"
+            : "Subscription created successfully"
+        );
+        setIsModalOpen(false);
         fetchSubscriptions();
         form.resetFields();
+        setEditingSubscription(null);
       } else {
-        message.error(response.data.message || "Failed to create subscription");
+        message.error(response.data.message || "Operation failed");
       }
     } catch (error) {
-      console.error("Error creating subscription:", error);
-      message.error(
-        error.response?.data?.message || "Failed to create subscription"
-      );
+      console.error("Error saving subscription:", error);
+      message.error("Failed to save subscription");
     }
+  };
+
+  const openEditModal = (record) => {
+    setEditingSubscription(record);
+    form.setFieldsValue(record);
+    setIsModalOpen(true);
   };
 
   const columns = [
@@ -142,6 +148,7 @@ const SubscriptionPage = () => {
       title: "Price",
       dataIndex: "Price",
       key: "price",
+      render: (price) => `$${price}`,
     },
     {
       title: "Status",
@@ -151,6 +158,8 @@ const SubscriptionPage = () => {
         <Switch
           checked={status}
           onChange={() => toggleStatus(record.key, status)}
+          checkedChildren="Active"
+          unCheckedChildren="Deactivated"
         />
       ),
     },
@@ -159,12 +168,12 @@ const SubscriptionPage = () => {
       key: "action",
       render: (_, record) => (
         <Space>
-          <Button type="link" onClick={() => navigate(`/update/${record.key}`)}>
+          <Button type="link" onClick={() => openEditModal(record)}>
             Edit
           </Button>
           <Popconfirm
-            title="Delete the task"
-            description="Are you sure you want to delete this task?"
+            title="Delete Subscription"
+            description="Are you sure you want to delete this subscription?"
             onConfirm={() => deleteSubscription(record.key)}
             okText="Yes"
             cancelText="No"
@@ -178,124 +187,75 @@ const SubscriptionPage = () => {
 
   return (
     <Content className="content-container">
-      <div className="myData-container">
-        <div
-          className="myData-header"
-          style={{ marginLeft: "250px", display: "flex", gap: "16px" }}
-        >
-          <Button type="primary" onClick={() => setIsCreating(true)}>
-            Create Subscription
-          </Button>
-        </div>
-
-        {isCreating && (
-          <Card
-            style={{
-              marginTop: "16px",
-              marginLeft: "250px",
-              padding: "16px",
-              background: "white",
-            }}
-          >
-            <Form form={form} layout="vertical" onFinish={createSubscription}>
-              <Row gutter={16}>
-                <Col span={12}>
-                  <Form.Item
-                    label="Subscription Name"
-                    name="Name"
-                    rules={[{ required: true, message: "Please enter a name" }]}
-                  >
-                    <Input />
-                  </Form.Item>
-                </Col>
-                <Col span={12}>
-                  <Form.Item
-                    label="Price ($)"
-                    name="Price"
-                    rules={[
-                      { required: true, message: "Please enter a price" },
-                      {
-                        pattern: /^[0-9]+$/,
-                        message: "Price must be a number",
-                      },
-                    ]}
-                  >
-                    <Input />
-                  </Form.Item>
-                </Col>
-              </Row>
-
-              <Form.Item
-                label="Description"
-                name="Description"
-                rules={[
-                  { required: true, message: "Please enter a description" },
-                ]}
-              >
-                <Input.TextArea />
-              </Form.Item>
-
-              <Row gutter={16}>
-                <Col span={12}>
-                  <Form.Item
-                    label="Tenancy Modal"
-                    name="TenancyModal"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please select a tenancy modal",
-                      },
-                    ]}
-                  >
-                    <Select placeholder="Select tenancy modal">
-                      <Option value="Shared (Schema)">Shared (Schema)</Option>
-                      <Option value="Shared (Schema) (Add-on: Isolated Schema)">
-                        Shared (Schema) (Add-on: Isolated Schema)
-                      </Option>
-                      <Option value="Isolated (Schema)">
-                        Isolated (Schema)
-                      </Option>
-                      <Option value="Isolated (Database/Cloud)">
-                        Isolated (Database/Cloud)
-                      </Option>
-                    </Select>
-                  </Form.Item>
-                </Col>
-                <Col span={12}>
-                  <Form.Item
-                    label="Target Audience"
-                    name="TargetAudience"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please select a target audience",
-                      },
-                    ]}
-                  >
-                    <Select mode="single" placeholder="Select target audience">
-                      <Option value="students">Students</Option>
-                      <Option value="professionals">Professionals</Option>
-                      <Option value="enterprises">Enterprises</Option>
-                      <Option value="freelancers">Freelancers</Option>
-                    </Select>
-                  </Form.Item>
-                </Col>
-              </Row>
-
-              <Space>
-                <Button type="primary" htmlType="submit">
-                  Submit
-                </Button>
-                <Button onClick={() => setIsCreating(false)}>Cancel</Button>
-              </Space>
-            </Form>
-          </Card>
-        )}
-
-        <Card style={{ marginTop: "16px", marginLeft: "250px" }}>
-          <Table columns={columns} dataSource={subscriptions} rowKey="_id" />
-        </Card>
+      <div
+        style={{
+          marginBottom: "16px",
+          textAlign: "left",
+          marginLeft: "250px",
+        }}
+      >
+        <Button type="primary" onClick={() => setIsModalOpen(true)}>
+          <PlusOutlined /> Create Subscription
+        </Button>
       </div>
+
+      <Card style={{ marginLeft: "250px", marginRight: "25px" }}>
+        <Table columns={columns} dataSource={subscriptions} rowKey="_id" />
+      </Card>
+
+      <Modal
+        title={
+          editingSubscription ? "Edit Subscription" : "Create Subscription"
+        }
+        open={isModalOpen}
+        onCancel={() => {
+          setIsModalOpen(false);
+          setEditingSubscription(null);
+          form.resetFields();
+        }}
+        footer={null}
+      >
+        <Form form={form} layout="vertical" onFinish={handleFormSubmit}>
+          <Form.Item
+            label="Subscription Name"
+            name="Name"
+            rules={[{ required: true, message: "Please enter a name" }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="Price ($)"
+            name="Price"
+            rules={[{ required: true, message: "Please enter a price" }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="Description"
+            name="Description"
+            rules={[{ required: true, message: "Please enter a description" }]}
+          >
+            <Input.TextArea />
+          </Form.Item>
+          <Form.Item
+            label="Target Audience"
+            name="TargetAudience"
+            rules={[{ required: true, message: "Select target audience" }]}
+          >
+            <Select>
+              <Option value="students">Students</Option>
+              <Option value="professionals">Professionals</Option>
+              <Option value="enterprises">Enterprises</Option>
+            </Select>
+          </Form.Item>
+          <Space>
+            <Button type="primary" htmlType="submit">
+              Submit
+            </Button>
+            <Button onClick={() => setIsModalOpen(false)}>Cancel</Button>
+          </Space>
+        </Form>
+      </Modal>
     </Content>
   );
 };
