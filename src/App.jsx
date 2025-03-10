@@ -8,6 +8,7 @@ import CreateSubscription from "./pages/CreateSubscription";
 import EditSubscription from "./pages/EditSubscription";
 import FeatureGetting from "./pages/FeatureGetting";
 import EditFeature from "./pages/EditFeature";
+import AccountListing from "./pages/AccountListings";
 
 function App() {
   return (
@@ -16,14 +17,12 @@ function App() {
       <Layout>
         <Header />
         <Routes>
-          <Route path="/subscriptions" element={<SubscriptionPage />} />
-          <Route path="/create" element={<CreateSubscription />} />
-          <Route path="/update/:id" element={<EditSubscription />} />
-          <Route path="/features" element={<FeatureGetting></FeatureGetting>} />
-          <Route
-            path="/updateFeatures/:id"
-            element={<EditFeature></EditFeature>}
-          />
+          <Route path="/" element={<SubscriptionPage />} />
+          {/* <Route path="/create" element={<CreateSubscription />} />
+          <Route path="/update/:id" element={<EditSubscription />} /> */}
+          <Route path="/features" element={<FeatureGetting />} />
+          <Route path="/updateFeatures/:id" element={<EditFeature />} />
+          <Route path="/account-listing" element={<AccountListing />} />
         </Routes>
       </Layout>
     </Layout>

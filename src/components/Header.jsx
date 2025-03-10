@@ -12,6 +12,8 @@ const HeaderComponent = () => {
     headerTitle = "Subscription Management";
   } else if (location.pathname === "/features") {
     headerTitle = "Features Management";
+  } else if (location.pathname === "/account-listing") {
+    headerTitle = "List Of Accounts";
   }
 
   return (
