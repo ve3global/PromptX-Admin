@@ -116,7 +116,7 @@ const Login = () => {
   //     }
   //   };
   const handleLogin = () => {
-    navigate("/");
+    navigate("/subscriptions");
   };
 
   return (
