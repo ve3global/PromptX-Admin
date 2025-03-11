@@ -1,7 +1,9 @@
 name: Deploy Service
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - feat_deployment
 
 jobs:
   deploy:
@@ -61,4 +63,3 @@ jobs:
           if kubectl get deployment admin-deployment -n admin &>/dev/null; then kubectl delete deployment admin-deployment -n admin; fi  
           kubectl apply -f manifest.yml -n admin
           kubectl get svc -n admin
-          
