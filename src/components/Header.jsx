@@ -6,7 +6,7 @@ import "../assets/scss/Header.scss";
 
 const HeaderComponent = () => {
   const location = useLocation();
-  let headerTitle = "Dashboard";
+  let headerTitle = "Subscription Management";
 
   if (location.pathname === "/subscriptions") {
     headerTitle = "Subscription Management";
@@ -26,12 +26,16 @@ const HeaderComponent = () => {
           alignItems: "center",
         }}
       >
-        <h2 className="header-title" style={{ margin: 5, paddingRight: 690 }}>
+        <h2 className="header-title" style={{ margin: 5, marginLeft: 700 }}>
           {headerTitle}
         </h2>
         <div
           className="header-right"
-          style={{ display: "flex", alignItems: "center", gap: "15px" }}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "15px",
+          }}
         >
           <Badge count={5} className="badge">
             <BellOutlined style={{ fontSize: "20px", color: "#333" }} />

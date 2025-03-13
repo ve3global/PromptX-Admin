@@ -9,6 +9,8 @@ import EditSubscription from "./pages/EditSubscription";
 import FeatureGetting from "./pages/FeatureGetting";
 import EditFeature from "./pages/EditFeature";
 import Login from "./pages/Login";
+import AccountListing from "./pages/AccountListings";
+import Settings from "./pages/Settings";
 function App() {
   return (
     <Layout hasSider>
@@ -22,6 +24,8 @@ function App() {
           <Route path="/features" element={<FeatureGetting />} />
           <Route path="/updateFeatures/:id" element={<EditFeature />} />
           <Route path="/account-listing" element={<AccountListing />} />
+          {/* <Route path="/settings" element={<Settings></Settings>} /> */}
+          {/* admin ui fixed */}
         </Routes>
       </Layout>
     </Layout>
