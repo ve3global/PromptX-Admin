@@ -25,6 +25,7 @@ function App() {
           <Route path="/updateFeatures/:id" element={<EditFeature />} />
           <Route path="/account-listing" element={<AccountListing />} />
           {/* <Route path="/settings" element={<Settings></Settings>} /> */}
+          {/* admin ui fixed */}
         </Routes>
       </Layout>
     </Layout>
